@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quadrante Pro | Gestão Comercial</title>
+<style>
+:root{--bg:#f3f6fb;--card:#fff;--ink:#172033;--muted:#6d7890;--nav:#06356b;--blue:#063f7c;--line:#e5eaf2;--green:#19a974;--orange:#f59e0b;--red:#ef4444;--base-size:14px}
+*{box-sizing:border-box} body{margin:0;font-family:var(--app-font,Inter),Segoe UI,Arial,sans-serif;font-size:var(--base-size);background:var(--bg);color:var(--ink)}
+.app{display:grid;grid-template-columns:245px 1fr;min-height:100vh}
+aside{background:var(--nav);color:white;padding:24px 18px}.brand{font-size:22px;font-weight:800;margin-bottom:5px}.sub{color:#9eabc2;font-size:12px;margin-bottom:28px}
+nav button{width:100%;border:0;background:transparent;color:#b8c3d8;text-align:left;padding:13px 14px;border-radius:10px;margin:3px 0;font-size:14px;cursor:pointer}
+nav button:hover,nav button.active{background:#1c2940;color:#fff}.main{padding:28px;overflow:auto}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.title h1{margin:0;font-size:26px}.title p{margin:5px 0 0;color:var(--muted)}
+.datebox{background:white;border:1px solid var(--line);padding:10px 14px;border-radius:12px}
+.cards{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:20px}.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:17px;box-shadow:0 4px 16px #1d2b4b0a}
+.kpi .n{font-size:28px;font-weight:800;margin-top:8px}.kpi small{color:var(--muted)}
+.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:18px}
+.paneltop{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.panel h2{font-size:18px;margin:0}
+.btn{border:0;border-radius:9px;padding:10px 14px;cursor:pointer;font-weight:650}.primary{background:var(--blue);color:white}.ghost{background:#eef3ff;color:#245acb}
+table{width:100%;border-collapse:collapse}th{text-align:left;color:var(--muted);font-size:12px;padding:10px;border-bottom:1px solid var(--line)}td{padding:10px;border-bottom:1px solid #eef1f6;font-size:13px}
+input,select,textarea{width:100%;border:1px solid #dce3ee;border-radius:8px;padding:9px;background:#fff;font:inherit}.time{font-weight:800;color:#25324a}.tag{display:inline-block;padding:5px 8px;border-radius:20px;font-size:11px;font-weight:700}.p{background:#fff4d8;color:#9a6500}.c{background:#dcf8ec;color:#08734d}.a{background:#e8efff;color:#245acb}
+.grid2{display:grid;grid-template-columns:1.3fr .7fr;gap:18px}.barrow{margin:14px 0}.barlabel{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px}.bar{height:9px;background:#edf1f7;border-radius:20px;overflow:hidden}.fill{height:100%;background:var(--blue)}
+.view{display:none}.view.active{display:block}.formgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.client-list{display:grid;gap:9px}.client{border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;justify-content:space-between}
+footer{color:#8993a7;font-size:11px;margin-top:25px}
+@media(max-width:900px){.app{grid-template-columns:1fr}aside{display:none}.cards{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}.main{padding:15px}}
+
+.chart{display:flex;align-items:flex-end;gap:18px;height:260px;padding:25px 15px 10px;border-bottom:1px solid var(--line)}
+.col{flex:1;text-align:center}.vbar{width:65%;margin:auto;background:var(--blue);border-radius:8px 8px 0 0;min-height:3px}.col b{display:block;font-size:11px;margin-top:8px}.col span{font-size:11px;color:var(--muted)}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.dayname{font-size:11px;font-weight:800;color:var(--muted);text-align:center;padding:8px}.day{min-height:92px;background:#fafbfe;border:1px solid var(--line);border-radius:10px;padding:8px;cursor:pointer}.day:hover{border-color:var(--blue)}.day.today{outline:2px solid var(--blue)}.day .num{font-weight:800}.day .dot{font-size:10px;margin-top:5px;color:var(--blue)}
+.attach{border:1px dashed #bfc9d8;border-radius:14px;padding:25px;text-align:center}.attach input{max-width:380px}.fileitem{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:10px 0}
+.settingrow{display:grid;grid-template-columns:1fr 2fr;gap:15px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+@media(max-width:700px){.calendar{grid-template-columns:repeat(7,minmax(42px,1fr))}.day{min-height:65px;padding:5px}.settingrow{grid-template-columns:1fr}}
+
+.activitygrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.activitycard{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fff}
+.activitycard h3{margin:0 0 6px}.activitycard .big{font-size:30px;font-weight:800;margin:10px 0}
+.activityform{display:grid;grid-template-columns:1.2fr 1fr 1fr 1.2fr auto;gap:9px;align-items:end}
+@media(max-width:900px){.activitygrid{grid-template-columns:repeat(2,1fr)}.activityform{grid-template-columns:1fr}}
+
+.toolgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.toolbox{border:1px solid var(--line);background:white;border-radius:14px;padding:18px}.toolbox h3{margin:0 0 8px}.toolbox p{font-size:12px;color:var(--muted);min-height:34px}.colorrow{display:flex;gap:12px;align-items:center}.colorrow input[type=color]{width:60px;height:42px;padding:2px}
+.preview{padding:20px;border-radius:14px;background:var(--nav);color:white;margin-top:15px}.rangeval{font-weight:800;color:var(--blue)}
+@media(max-width:800px){.toolgrid{grid-template-columns:1fr}}
+.dealerBrand{background:#06356b;border-radius:16px;padding:10px;margin:-6px -4px 20px;overflow:hidden;box-shadow:0 12px 30px #0002}.dealerLogo{display:block;width:100%;height:112px;object-fit:cover;border-radius:10px}.profileMini{display:flex;align-items:center;gap:10px;padding:4px 5px 12px}.profilePic{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #fff}.profileSystem{font-weight:800;letter-spacing:.5px;font-size:15px}aside{background:linear-gradient(180deg,#06356b,#052a55)}nav button{font-weight:650}nav button:hover,nav button.active{background:#ffffff18;box-shadow:inset 3px 0 0 #fff}.card,.panel,.activitycard,.toolbox{box-shadow:0 8px 24px #12365b0c}.kpi .n{color:#063f7c}header{background:#fff;border:1px solid var(--line);border-radius:17px;padding:17px 19px;box-shadow:0 7px 24px #12365b0a}</style>
+</head>
+<body>
+<div class="app">
+<aside>
+ <div class="dealerBrand"><img src="data:image/jpeg;base64,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" class="dealerLogo" alt="Hyundai Servopa"></div><div class="profileMini"><img id="sidePhoto" alt="" class="profilePic" style="display:none"><div><div id="sideBrand" class="profileSystem">QUADRANTE PRO</div><div class="sub" id="sideUser">Gestão diária do vendedor</div></div></div><div class="sub" id="sideStore">Hyundai Servopa</div>
+ <nav>
+  <button class="active" onclick="show('dashboard',this)">▦ Dashboard</button>
+  <button onclick="show('agenda',this)">◷ Quadrante Diário</button>
+  <button onclick="show('clientes',this)">♙ Clientes & Leads</button>
+  <button onclick="show('relatorio',this)">▥ Relatório Diário</button>
+  <button onclick="show('graficos',this)">◫ Gráficos</button>
+  <button onclick="show('calendario',this)">▣ Calendário</button>
+  <button onclick="show('anexos',this)">⌑ Anexos</button>
+  <button onclick="show('ferramentas',this)">🛠 Ferramentas</button>
+  <button onclick="show('config',this)">⚙ Configurações</button>
+ </nav>
+</aside>
+<main class="main">
+<header><div class="title"><h1 id="pageTitle">Dashboard Comercial</h1><p>Organize o dia, acompanhe clientes e aumente conversões.</p></div><div class="datebox"><input id="data" type="date"></div></header>
+
+<section id="dashboard" class="view active"><div style="margin-bottom:16px;padding:16px 18px;border-radius:15px;background:#06356b;color:#fff"><b style="font-size:18px">Hyundai Servopa • Gestão Comercial</b><div style="opacity:.8;font-size:12px;margin-top:4px">Prospecção • Ligações • Showroom • Test Drive • Negociação • Fechamento</div></div>
+<div class="cards">
+ <div class="card kpi"><small>Contatos</small><div class="n" id="kCont">0</div></div>
+ <div class="card kpi"><small>Ligações no Quadrante</small><div class="n" id="kQuadCalls">0</div></div>
+ <div class="card kpi"><small>Agendamentos</small><div class="n" id="kAg">0</div></div>
+ <div class="card kpi"><small>Test Drives</small><div class="n" id="kTest">0</div></div>
+ <div class="card kpi"><small>Propostas</small><div class="n" id="kProp">0</div></div>
+ <div class="card kpi"><small>Vendas</small><div class="n" id="kVenda">0</div></div>
+</div>
+<div class="grid2">
+<div class="panel"><div class="paneltop"><h2>Meu dia</h2><button class="btn primary" onclick="goAgenda()">Abrir quadrante</button></div><div id="todayList"></div></div>
+<div class="panel"><h2>Produtividade</h2>
+ <div class="barrow"><div class="barlabel"><span>Tarefas concluídas</span><b id="pct">0%</b></div><div class="bar"><div id="fill" class="fill" style="width:0%"></div></div></div>
+ <p style="color:var(--muted);font-size:13px">O indicador é atualizado conforme você conclui as atividades do quadrante.</p>
+</div></div>
+</section>
+
+<section id="agenda" class="view">
+<div class="panel"><div class="paneltop"><h2>Quadrante Diário</h2><button class="btn primary" onclick="saveAgenda()">Salvar dia</button></div>
+<table><thead><tr><th>HORÁRIO</th><th>ATIVIDADE</th><th>FLUXO</th><th>ORIGEM</th><th>QUANTIDADE</th><th>ASSUNTO / AÇÃO</th><th>STATUS</th><th>AÇÕES</th></tr></thead><tbody id="agendaRows"></tbody></table>
+</div></section>
+
+
+<section id="clientes" class="view">
+<div class="panel"><div class="paneltop"><h2>Novo cliente / lead</h2></div>
+<div class="formgrid"><input id="cnome" placeholder="Nome"><input id="ctel" placeholder="Telefone"><input id="cveic" placeholder="Veículo de interesse"><select id="cetapa"><option>Novo Lead</option><option>Contato</option><option>Negociação</option><option>Proposta</option><option>Test Drive</option><option>Venda</option><option>Insucesso</option></select></div>
+<div style="margin-top:10px"><button class="btn primary" onclick="addClient()">Adicionar cliente</button></div></div>
+<div class="panel"><h2 style="margin-bottom:15px">Carteira</h2><div id="clients" class="client-list"></div></div>
+</section>
+
+<section id="relatorio" class="view">
+<div class="cards">
+ <div class="card kpi"><small>Atividades concluídas</small><div class="n" id="rDone">0</div></div>
+ <div class="card kpi"><small>Pendentes</small><div class="n" id="rPend">0</div></div>
+ <div class="card kpi"><small>Clientes cadastrados</small><div class="n" id="rClients">0</div></div>
+</div>
+<div class="panel"><h2>Resumo do dia</h2><textarea id="resumo" rows="8" placeholder="Registre aqui negociações importantes, retornos para amanhã, vendas e observações..."></textarea><br><br><button class="btn primary" onclick="saveResumo()">Salvar relatório</button></div>
+</section>
+
+<section id="graficos" class="view">
+<div class="card" style="margin-bottom:16px">
+  <div class="sectiontitle">Gráfico Redondo do Quadrante Diário</div>
+  <div style="font-size:12px;color:#7b8598;margin-bottom:12px">Gráfico circular atualizado automaticamente pelas quantidades lançadas no Quadrante Diário.</div>
+  <canvas id="quadranteChart" height="110"></canvas>
+</div>
+<div class="card" style="margin-bottom:16px">
+  <div class="sectiontitle">Origem dos Atendimentos</div>
+  <div style="font-size:12px;color:#7b8598;margin-bottom:12px">Leads • Oficina • Prospecção, conforme o Quadrante Diário.</div>
+  <canvas id="origemChart" height="90"></canvas>
+</div>
+ <div class="cards">
+  <div class="card kpi"><small>Contatos</small><div class="n" id="gCont">0</div></div>
+  <div class="card kpi"><small>Concluídas</small><div class="n" id="gDone">0</div></div>
+  <div class="card kpi"><small>Clientes</small><div class="n" id="gClients">0</div></div>
+  <div class="card kpi"><small>Conversão</small><div class="n" id="gConv">0%</div></div>
+  <div class="card kpi"><small>Vendas</small><div class="n" id="gSales">0</div></div>
+ </div>
+ <div class="panel"><div class="paneltop"><h2>Produtividade por atividade</h2><button class="btn ghost" onclick="renderCharts()">Atualizar</button></div><div id="chart" class="chart"></div></div>
+</section>
+
+<section id="calendario" class="view">
+ <div class="panel"><div class="paneltop"><button class="btn ghost" onclick="changeMonth(-1)">‹ Anterior</button><h2 id="monthTitle"></h2><button class="btn ghost" onclick="changeMonth(1)">Próximo ›</button></div>
+ <div id="calendar" class="calendar"></div></div>
+ <div class="panel"><h2>Agenda da data selecionada</h2><p id="selectedDate" style="color:var(--muted)"></p><div id="calendarTasks"></div></div>
+</section>
+
+<section id="anexos" class="view">
+ <div class="panel"><h2>Anexos e documentos</h2><p style="color:var(--muted)">Adicione propostas, fotos, PDFs e documentos. Nesta versão local, o sistema registra o nome, tipo e tamanho do arquivo; o arquivo original permanece no seu computador.</p>
+ <div class="attach"><input id="fileInput" type="file" multiple><br><br><button class="btn primary" onclick="addFiles()">Registrar anexos</button></div></div>
+ <div class="panel"><h2>Arquivos registrados</h2><div id="fileList"></div></div>
+</section>
+
+
+<section id="ferramentas" class="view">
+ <div class="toolgrid">
+  <div class="toolbox"><h3>📥 Importar dados</h3><p>Acesso rápido para preparar importações de clientes e leads.</p><button class="btn ghost" onclick="show('clientes',document.querySelectorAll('nav button')[3])">Abrir clientes</button></div>
+  <div class="toolbox"><h3>💾 Backup</h3><p>Exporte uma cópia dos dados salvos no sistema.</p><button class="btn ghost" onclick="backup()">Exportar backup</button></div>
+  <div class="toolbox"><h3>📊 Indicadores</h3><p>Acompanhe produtividade e desempenho comercial.</p><button class="btn ghost" onclick="show('graficos',document.querySelectorAll('nav button')[5]);renderCharts()">Abrir gráficos</button></div>
+  <div class="toolbox"><h3>📅 Calendário</h3><p>Consulte os registros e compromissos por data.</p><button class="btn ghost" onclick="show('calendario',document.querySelectorAll('nav button')[6]);renderCalendar()">Abrir calendário</button></div>
+  <div class="toolbox"><h3>📎 Documentos</h3><p>Central de anexos e arquivos relacionados aos atendimentos.</p><button class="btn ghost" onclick="show('anexos',document.querySelectorAll('nav button')[7])">Abrir anexos</button></div>
+  <div class="toolbox"><h3>🧹 Manutenção</h3><p>Recarregue a interface e os indicadores sem apagar seus dados.</p><button class="btn ghost" onclick="location.reload()">Atualizar sistema</button></div>
+ </div>
+</section>
+<section id="config" class="view">
+ <div class="panel"><h2>Identidade do sistema</h2>
+  <div class="settingrow"><b>Nome do sistema</b><input id="cfgSystem" placeholder="Ex.: Quadrante Pro"></div>
+  <div class="settingrow"><b>Cargo / especialidade</b><input id="cfgRole" placeholder="Ex.: Especialista em Vendas"></div>
+  <div class="settingrow"><b>Foto de perfil / logo</b><div><input id="cfgPhoto" type="file" accept="image/*" onchange="loadPhoto(event)"><div style="display:flex;align-items:center;gap:12px;margin-top:10px"><img id="photoPreview" style="width:74px;height:74px;border-radius:14px;object-fit:cover;background:#eef2f7;display:none"><button class="btn ghost" onclick="removePhoto()">Remover foto</button></div></div></div>
+ </div>
+ <div class="panel"><h2>Configurações do vendedor</h2>
+  <div class="settingrow"><b>Nome do vendedor</b><input id="cfgName" placeholder="Ex.: Alceu"></div>
+  <div class="settingrow"><b>Empresa / loja</b><input id="cfgStore" placeholder="Nome da concessionária"></div>
+  <div class="settingrow"><b>Meta de contatos/dia</b><input id="cfgContacts" type="number" value="15"></div>
+  <div class="settingrow"><b>Meta de test drives/dia</b><input id="cfgTests" type="number" value="2"></div>
+  <div class="settingrow"><b>Meta de propostas/dia</b><input id="cfgProps" type="number" value="3"></div>
+  
+  <div class="settingrow"><b>Cor principal</b><div class="colorrow"><input id="cfgPrimary" type="color" value="#246bfd"><span>Botões, gráficos e destaques</span></div></div>
+  <div class="settingrow"><b>Cor do menu</b><div class="colorrow"><input id="cfgNav" type="color" value="#101827"><span>Barra lateral</span></div></div>
+  <div class="settingrow"><b>Fonte do sistema</b><select id="cfgFont"><option value="Inter">Inter</option><option value="Arial">Arial</option><option value="Verdana">Verdana</option><option value="Tahoma">Tahoma</option><option value="Georgia">Georgia</option></select></div>
+  <div class="settingrow"><b>Tamanho da interface</b><div><input id="cfgSize" type="range" min="12" max="19" value="14" oninput="sizeOut.textContent=this.value+'px';previewTheme()"><span id="sizeOut" class="rangeval">14px</span></div></div>
+  <div class="settingrow"><b>Visualização</b><div class="preview" id="themePreview"><b>Quadrante Pro</b><br><span>Prévia da aparência do sistema</span></div></div>
+  <div style="margin-top:16px"><button class="btn primary" onclick="saveConfig()">Salvar configurações</button> <button class="btn ghost" onclick="backup()">Exportar backup</button></div>
+ </div>
+</section>
+<footer>Quadrante Pro • Sistema local de gestão comercial</footer>
+</main></div>
+<script>
+const slots=[
+["09:30–10:30","Organização da carteira"],["10:30–11:00","Prospecção ativa"],["11:00–11:30","Ligações"],["11:30–12:30","Atendimento de oficina"],["12:30–13:30","Intervalo / almoço"],["13:30–14:30","Follow-up"],["14:30–15:30","Showroom"],["15:30–16:30","Negociação / propostas"],["16:30–17:30","Test Drive"],["17:30–18:30","Resgate de clientes"],["18:30–19:00","Fechamento / CRM"]];
+const key=()=> "quad_"+document.getElementById("data").value;
+let clients=JSON.parse(localStorage.getItem("quad_clients")||"[]");
+function init(){
+ let d=new Date(); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); data.value=d.toISOString().slice(0,10);
+ renderAgenda();renderClients();loadResumo();update();
+}
+function show(id,b){document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));if(b)b.classList.add("active");pageTitle.textContent={dashboard:"Dashboard Comercial",agenda:"Quadrante Diário",clientes:"Clientes & Leads",relatorio:"Relatório Diário",graficos:"Gráficos & Indicadores",calendario:"Calendário Comercial",anexos:"Anexos & Documentos",ferramentas:"Central de Ferramentas",config:"Configurações & Aparência"}[id];update();if(id==="graficos")setTimeout(()=>{renderCharts();renderQuadranteChart();},30)}
+function goAgenda(){show("agenda",document.querySelectorAll("nav button")[1])}
+function getAgenda(){return JSON.parse(localStorage.getItem(key())||"null")||slots.map(x=>({time:x[0],act:x[1],name:"",tel:"",note:"",status:"Pendente"}))}
+function renderAgenda(){let a=getAgenda();agendaRows.innerHTML=a.map((x,i)=>`<tr><td class=time>${x.time}</td><td><input type="text" data-i="${i}" data-f="act" value="${x.act||''}" placeholder="Nome da atividade" style="min-width:220px;width:100%"></td><td><select data-i="${i}" data-f="flow">
+<option ${x.flow=="Prospecção"?"selected":""}>Prospecção</option>
+<option ${x.flow=="Ligação"?"selected":""}>Ligação</option>
+<option ${x.flow=="Follow-up"?"selected":""}>Follow-up</option>
+<option ${x.flow=="Show Room"?"selected":""}>Show Room</option>
+<option ${x.flow=="Test Drive"?"selected":""}>Test Drive</option>
+<option ${x.flow=="Avaliação"?"selected":""}>Avaliação</option>
+<option ${x.flow=="Proposta"?"selected":""}>Proposta</option>
+<option ${x.flow=="Negociação"?"selected":""}>Negociação</option>
+<option ${x.flow=="Fechamento"?"selected":""}>Fechamento</option>
+<option ${x.flow=="Pós-venda"?"selected":""}>Pós-venda</option>
+<option ${x.flow=="Agendamento"?"selected":""}>Agendamento</option>
+<option ${x.flow=="Internet"?"selected":""}>Internet</option>
+<option ${x.flow=="Leads"?"selected":""}>Leads</option>
+<option ${x.flow=="Pausa"?"selected":""}>Pausa</option>
+</select></td>
+<td><select data-i="${i}" data-f="origin">
+<option value="">Selecionar</option>
+<option ${x.origin=="Leads"?"selected":""}>Leads</option>
+<option ${x.origin=="Oficina"?"selected":""}>Oficina</option>
+<option ${x.origin=="Prospecção"?"selected":""}>Prospecção</option>
+</select></td>
+<td><input type="number" min="0" step="1" data-i="${i}" data-f="qty" value="${x.qty||0}" style="max-width:90px"></td><td><input data-i="${i}" data-f="note" value="${x.note||''}"></td><td><select data-i="${i}" data-f="status"><option ${x.status=="Pendente"?"selected":""}>Pendente</option><option ${x.status=="Em andamento"?"selected":""}>Em andamento</option><option ${x.status=="Concluído"?"selected":""}>Concluído</option></select></td><td style="white-space:nowrap">
+<button type="button" class="btn ghost" onclick="editarAtividade(${i})">Editar nome</button>
+<button type="button" class="btn ghost" onclick="excluirLinhaQuadrante(${i})">Excluir</button>
+</td></tr>`).join("")}
+function saveAgenda(){let a=getAgenda();document.querySelectorAll("#agendaRows input,#agendaRows select").forEach(el=>a[+el.dataset.i][el.dataset.f]=el.value);localStorage.setItem(key(),JSON.stringify(a));update();renderQuadranteChart();alert("Quadrante salvo com sucesso.");}
+function update(){let a=getAgenda(),done=a.filter(x=>x.status=="Concluído").length,p=Math.round(done/a.length*100);pct.textContent=p+"%";fill.style.width=p+"%";rDone.textContent=done;rPend.textContent=a.length-done;rClients.textContent=clients.length;
+ let contacts=a.filter(x=>x.name||x.tel).length;kCont.textContent=contacts;kAg.textContent=a.filter(x=>/agend/i.test(x.note)).length;kTest.textContent=a.filter(x=>/test drive/i.test(x.note||"")||x.act=="Test Drive"&&x.status=="Concluído").length;kProp.textContent=a.filter(x=>/proposta/i.test(x.note||"")||(x.act||"").includes("propostas")&&x.status=="Concluído").length;kVenda.textContent=a.filter(x=>/venda|fechou|vendido/i.test(x.note||"")).length;
+ let qcalls=a.filter(x=>x.flow=="Ligação").reduce((t,x)=>t+(parseInt(x.qty)||0),0);
+ if(document.getElementById("kQuadCalls"))kQuadCalls.textContent=qcalls;
+ todayList.innerHTML=a.slice(0,7).map(x=>`<div style="display:flex;gap:12px;padding:9px 0;border-bottom:1px solid #eef1f6"><b style="width:90px">${x.time}</b><span style="flex:1">${x.act}${x.flow?" • "+x.flow:""}${x.origin?" • "+x.origin:""}</span><span class="tag ${x.status=="Concluído"?"c":x.status=="Em andamento"?"a":"p"}">${x.status}</span></div>`).join("")}
+function addClient(){if(!cnome.value.trim())return alert("Informe o nome.");clients.unshift({id:Date.now(),nome:cnome.value,tel:ctel.value,veic:cveic.value,etapa:cetapa.value});localStorage.setItem("quad_clients",JSON.stringify(clients));cnome.value=ctel.value=cveic.value="";renderClients();update()}
+function renderClients(){clientsEl=document.getElementById("clients");clientsEl.innerHTML=clients.length?clients.map(c=>`<div class=client><div><b>${c.nome}</b><div style="color:#748096;font-size:12px">${c.tel||"Sem telefone"} • ${c.veic||"Veículo não informado"}</div></div><div><span class="tag a">${c.etapa}</span> <button class="btn ghost" onclick="delClient(${c.id})">Excluir</button></div></div>`).join(""):"<p style='color:#7b8598'>Nenhum cliente cadastrado.</p>"}
+function delClient(id){if(confirm("Excluir este cliente?")){clients=clients.filter(c=>c.id!==id);localStorage.setItem("quad_clients",JSON.stringify(clients));renderClients();update()}}
+function saveResumo(){localStorage.setItem(key()+"_resumo",resumo.value);alert("Relatório salvo.")}
+function loadResumo(){resumo.value=localStorage.getItem(key()+"_resumo")||""}
+data.addEventListener("change",()=>{renderAgenda();loadResumo();update();renderCharts();renderQuadranteChart();renderCalendar()});
+
+let calDate=new Date();
+let attachments=JSON.parse(localStorage.getItem("quad_files")||"[]");
+function renderCharts(){
+ let a=getAgenda();
+ let groups=["Internet","Show Room","Leads","Prospecção","Ligação","Follow-up","Test Drive","Avaliação","Proposta","Negociação","Fechamento","Pós-venda","Agendamento","Pausa"];
+ let vals=groups.map(f=>[f,a.filter(x=>x.flow===f).reduce((t,x)=>t+(parseInt(x.qty)||0),0)]);
+ if(typeof chart!=="undefined"&&chart) chart.innerHTML=vals.map(v=>`<div class="col"><div class="vbar" style="height:${Math.max(12,Math.min(190,v[1]*18))}px"></div><b>${v[0]}</b><span>${v[1]}</span></div>`).join("");
+ let contacts=a.reduce((t,x)=>t+(parseInt(x.qty)||0),0),done=a.filter(x=>x.status==="Concluído").length,sales=a.filter(x=>x.flow==="Fechamento").reduce((t,x)=>t+(parseInt(x.qty)||0),0);
+ if(typeof gCont!=="undefined")gCont.textContent=contacts;
+ if(typeof gDone!=="undefined")gDone.textContent=done;
+ if(typeof gClients!=="undefined")gClients.textContent=clients.length;
+ if(typeof gSales!=="undefined")gSales.textContent=sales;
+ if(typeof gConv!=="undefined")gConv.textContent=contacts?Math.round(sales/contacts*100)+"%":"0%";
+}
+function renderCalendar(){
+ const names=["DOM","SEG","TER","QUA","QUI","SEX","SÁB"], y=calDate.getFullYear(),m=calDate.getMonth();
+ monthTitle.textContent=new Intl.DateTimeFormat("pt-BR",{month:"long",year:"numeric"}).format(calDate);
+ let first=new Date(y,m,1).getDay(), total=new Date(y,m+1,0).getDate(), h=names.map(n=>`<div class="dayname">${n}</div>`).join("");
+ for(let i=0;i<first;i++)h+=`<div></div>`;
+ let today=new Date();
+ for(let d=1;d<=total;d++){
+  let ds=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`, a=JSON.parse(localStorage.getItem("quad_"+ds)||"[]"), n=a.filter(x=>x.name||x.note).length;
+  let ist=today.getFullYear()==y&&today.getMonth()==m&&today.getDate()==d;
+  h+=`<div class="day ${ist?"today":""}" onclick="selectDay('${ds}')"><div class="num">${d}</div>${n?`<div class="dot">${n} registro(s)</div>`:""}</div>`;
+ }
+ calendar.innerHTML=h;
+}
+function changeMonth(n){calDate=new Date(calDate.getFullYear(),calDate.getMonth()+n,1);renderCalendar()}
+function selectDay(ds){selectedDate.textContent=new Date(ds+"T12:00").toLocaleDateString("pt-BR",{dateStyle:"full"});let a=JSON.parse(localStorage.getItem("quad_"+ds)||"[]");calendarTasks.innerHTML=a.length?a.filter(x=>x.name||x.note||x.status=="Concluído").map(x=>`<div class="fileitem"><b>${x.time} • ${x.act}</b><span>${x.name||x.note||x.status}</span></div>`).join(""):"<p style='color:#7b8598'>Nenhum registro nesta data.</p>"}
+function addFiles(){
+ let fs=[...fileInput.files];fs.forEach(f=>attachments.unshift({id:Date.now()+Math.random(),name:f.name,type:f.type||"arquivo",size:Math.round(f.size/1024)+" KB",date:new Date().toLocaleString("pt-BR")}));
+ localStorage.setItem("quad_files",JSON.stringify(attachments));fileInput.value="";renderFiles()
+}
+function renderFiles(){fileList.innerHTML=attachments.length?attachments.map(f=>`<div class="fileitem"><div><b>${f.name}</b><div style="font-size:11px;color:#7b8598">${f.type} • ${f.size} • ${f.date}</div></div><button class="btn ghost" onclick="delFile('${f.id}')">Excluir</button></div>`).join(""):"<p style='color:#7b8598'>Nenhum anexo registrado.</p>"}
+function delFile(id){attachments=attachments.filter(f=>String(f.id)!==String(id));localStorage.setItem("quad_files",JSON.stringify(attachments));renderFiles()}
+function applyTheme(c){
+ document.documentElement.style.setProperty("--blue",c.primary||"#246bfd");
+ document.documentElement.style.setProperty("--nav",c.nav||"#101827");
+ document.documentElement.style.setProperty("--app-font",c.font||"Inter");
+ document.documentElement.style.setProperty("--base-size",(c.size||14)+"px");
+ sideBrand.textContent=(c.system||"Quadrante Pro").toUpperCase();
+ sideUser.textContent=(c.name||"Alceu")+(c.role?" • "+c.role:"");
+ sideStore.textContent=c.store||"Hyundai Servopa";
+ if(c.photo){sidePhoto.src=c.photo;sidePhoto.style.display="block";photoPreview.src=c.photo;photoPreview.style.display="block"}else{sidePhoto.style.display="none";photoPreview.style.display="none"}
+}
+function previewTheme(){document.documentElement.style.setProperty("--blue",cfgPrimary.value);document.documentElement.style.setProperty("--nav",cfgNav.value);document.documentElement.style.setProperty("--app-font",cfgFont.value);document.documentElement.style.setProperty("--base-size",cfgSize.value+"px");sizeOut.textContent=cfgSize.value+"px"}
+function loadConfig(){
+ let c=JSON.parse(localStorage.getItem("quad_config")||"{}");
+ cfgSystem.value=c.system||"Quadrante Pro";cfgName.value=c.name||"Alceu";cfgRole.value=c.role||"Especialista em Vendas";cfgStore.value=c.store||"Hyundai Servopa";
+ cfgContacts.value=c.contacts||15;cfgTests.value=c.tests||2;cfgProps.value=c.props||3;cfgPrimary.value=c.primary||"#246bfd";cfgNav.value=c.nav||"#101827";cfgFont.value=c.font||"Inter";cfgSize.value=c.size||14;sizeOut.textContent=(c.size||14)+"px";applyTheme(c)
+}
+function currentConfig(){
+ let old=JSON.parse(localStorage.getItem("quad_config")||"{}");
+ return {system:cfgSystem.value,name:cfgName.value,role:cfgRole.value,store:cfgStore.value,contacts:cfgContacts.value,tests:cfgTests.value,props:cfgProps.value,primary:cfgPrimary.value,nav:cfgNav.value,font:cfgFont.value,size:+cfgSize.value,photo:old.photo||""}
+}
+function saveConfig(){let c=currentConfig();localStorage.setItem("quad_config",JSON.stringify(c));applyTheme(c);alert("Identidade e configurações salvas.")}
+function loadPhoto(e){
+ let f=e.target.files[0];if(!f)return;
+ if(f.size>1500000){alert("Escolha uma imagem de até 1,5 MB.");e.target.value="";return}
+ let r=new FileReader();r.onload=()=>{let c=currentConfig();c.photo=r.result;localStorage.setItem("quad_config",JSON.stringify(c));applyTheme(c)};r.readAsDataURL(f)
+}
+function removePhoto(){let c=currentConfig();c.photo="";localStorage.setItem("quad_config",JSON.stringify(c));cfgPhoto.value="";applyTheme(c)}
+function backup(){let data={config:JSON.parse(localStorage.getItem("quad_config")||"{}"),clients,attachments,agenda:{}};for(let i=0;i<localStorage.length;i++){let k=localStorage.key(i);if(k.startsWith("quad_20"))data.agenda[k]=JSON.parse(localStorage.getItem(k)||"null")||localStorage.getItem(k)}let blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"}),u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download="quadrante_pro_backup.json";a.click();URL.revokeObjectURL(u)}
+
+
+function activityKey(){return "quad_activities_"+document.getElementById("data").value}
+function getActivities(){return JSON.parse(localStorage.getItem(activityKey())||"[]")}
+function addActivity(){
+ if(!actClient.value.trim()&&!actPhone.value.trim()&&!actNote.value.trim())return alert("Informe cliente, telefone ou observação.");
+ let type=actType.value,q=getAgenda();
+ let idx=q.findIndex(x=>x.flow==type);
+ if(idx<0)idx=q.findIndex(x=>!x.flow);
+ if(idx<0)idx=q.length-1;
+ q[idx].flow=type;q[idx].qty=(parseInt(q[idx].qty)||0)+1;
+ let d=[actClient.value,actPhone.value,actNote.value].filter(Boolean).join(" • ");
+ q[idx].note=q[idx].note?(q[idx].note+" | "+d):d;
+ if(q[idx].status=="Pendente")q[idx].status="Em andamento";
+ localStorage.setItem(key(),JSON.stringify(q));
+ actClient.value=actPhone.value=actNote.value="";
+ renderAgenda();update();
+ alert("Atividade sincronizada com o Quadrante Diário.");
+}
+function deleteActivity(id){let a=getActivities().filter(x=>x.id!==id);localStorage.setItem(activityKey(),JSON.stringify(a));updateActivityKPIs()}
+function updateActivityKPIs(){
+ let q=getAgenda();function total(t){return q.filter(x=>x.flow==t).reduce((n,x)=>n+(parseInt(x.qty)||0),0)}
+ aPros.textContent=total("Prospecção");aCalls.textContent=total("Ligação");aFollow.textContent=total("Follow-up");aShow.textContent=total("Showroom");aTests.textContent=total("Test Drive");aEval.textContent=total("Avaliação");aProposal.textContent=total("Proposta");aNeg.textContent=total("Negociação");aClose.textContent=total("Fechamento");aPost.textContent=total("Pós-venda");aPause.textContent=total("Pausa");
+}
+function renderActivities(){
+ let q=getAgenda().filter(x=>x.flow&&((parseInt(x.qty)||0)>0||x.note));
+ activityList.innerHTML=q.length?q.map(x=>`<div class="fileitem"><div><b>${x.time} • ${x.flow} • Qtd. ${parseInt(x.qty)||0}</b><div style="font-size:11px;color:#7b8598">${x.act}${x.note?" • "+x.note:""} • ${x.status}</div></div><button class="btn ghost" onclick="openQuadrantFromActivity()">Editar no Quadrante</button></div>`).join(""):"<p style='color:#7b8598'>Nenhuma atividade no Quadrante Diário.</p>";updateActivityKPIs()
+}
+function openQuadrantFromActivity(){show("agenda",document.querySelectorAll("nav button")[1]);renderAgenda()}
+
+init();renderCharts();renderQuadranteChart();renderCalendar();renderFiles();loadConfig();
+["cfgPrimary","cfgNav","cfgFont"].forEach(id=>document.getElementById(id).addEventListener("input",previewTheme));
+
+
+function editarAtividade(i){
+ const campo=document.querySelector(`#agendaRows input[data-i="${i}"][data-f="act"]`);
+ if(!campo)return alert("Campo de atividade não encontrado.");
+ campo.disabled=false;
+ campo.readOnly=false;
+ campo.focus();
+ campo.select();
+}
+function excluirLinhaQuadrante(i){
+ let a=getAgenda();
+ if(!a[i])return;
+ if(!confirm("Excluir esta atividade do Quadrante Diário?"))return;
+ a.splice(i,1);
+ localStorage.setItem(key(),JSON.stringify(a));
+ renderAgenda();update();renderQuadranteChart();
+}
+function renderOrigemChart(){
+ const c=document.getElementById("origemChart");if(!c)return;
+ const cats=["Leads","Oficina","Prospecção"],q=getAgenda();
+ const vals=cats.map(o=>q.filter(x=>x.origin===o).reduce((t,x)=>t+(parseInt(x.qty)||0),0));
+ const dpr=window.devicePixelRatio||1,w=c.parentElement.clientWidth-24,h=220;
+ c.width=w*dpr;c.height=h*dpr;c.style.width=w+"px";c.style.height=h+"px";
+ const ctx=c.getContext("2d");ctx.scale(dpr,dpr);ctx.clearRect(0,0,w,h);
+ const max=Math.max(5,...vals),left=40,top=20,bottom=45,pw=w-left-15,ph=h-top-bottom,gap=pw/cats.length,bw=Math.min(100,gap*.55);
+ ctx.strokeStyle="#d9e1ea";ctx.fillStyle="#667085";ctx.font="11px Arial";
+ for(let i=0;i<=4;i++){let y=top+ph-ph*i/4;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-15,y);ctx.stroke();ctx.fillText(String(Math.round(max*i/4)),5,y+4)}
+ vals.forEach((v,i)=>{let bh=ph*v/max,x=left+i*gap+(gap-bw)/2,y=top+ph-bh;ctx.fillStyle="#063f7c";ctx.fillRect(x,y,bw,bh);ctx.fillStyle="#06356b";ctx.textAlign="center";ctx.font="bold 12px Arial";ctx.fillText(v,x+bw/2,y-5);ctx.font="11px Arial";ctx.fillText(cats[i],x+bw/2,top+ph+22)});
+ ctx.textAlign="left";
+}
+function renderQuadranteChart(){
+ const c=document.getElementById("quadranteChart");if(!c)return;
+ const flows=["Agendamento","Internet","Show Room","Leads","Prospecção","Ligação","Follow-up","Test Drive","Avaliação","Proposta","Negociação","Fechamento","Pós-venda","Pausa"];
+ const q=getAgenda(),vals=flows.map(f=>q.filter(x=>x.flow===f).reduce((t,x)=>t+(parseInt(x.qty)||0),0));
+ const total=vals.reduce((a,b)=>a+b,0),dpr=window.devicePixelRatio||1;
+ const parentW=c.parentElement.clientWidth;if(parentW<120)return;
+ const w=Math.max(320,parentW-24),h=380;
+ c.width=w*dpr;c.height=h*dpr;c.style.width=w+"px";c.style.height=h+"px";
+ const ctx=c.getContext("2d");ctx.scale(dpr,dpr);ctx.clearRect(0,0,w,h);
+ const cx=Math.min(w*.36,220),cy=175,r=Math.min(125,w*.25),inner=r*.58;
+ const colors=["#063f7c","#0b63a5","#1581c4","#33a1d8","#5db9df","#7cc9e7","#9bd8ed","#365f91","#587aa3","#7896b7","#9aacbf","#c4ccd5"];
+ if(total===0){
+   ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.arc(cx,cy,inner,0,Math.PI*2,true);ctx.fillStyle="#e7edf3";ctx.fill();
+ }else{
+   let a=-Math.PI/2;
+   vals.forEach((v,i)=>{if(!v)return;let n=a+(v/total)*Math.PI*2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,a,n);ctx.closePath();ctx.fillStyle=colors[i%colors.length];ctx.fill();a=n});
+   ctx.beginPath();ctx.arc(cx,cy,inner,0,Math.PI*2);ctx.fillStyle="#fff";ctx.fill();
+ }
+ ctx.textAlign="center";ctx.fillStyle="#06356b";ctx.font="bold 30px Arial";ctx.fillText(total,cx,cy+5);
+ ctx.font="12px Arial";ctx.fillStyle="#667085";ctx.fillText("TOTAL",cx,cy+27);
+ let lx=Math.max(cx+r+45,w*.58),ly=45;ctx.textAlign="left";
+ flows.forEach((f,i)=>{ctx.fillStyle=colors[i%colors.length];ctx.beginPath();ctx.arc(lx,ly+i*25,6,0,Math.PI*2);ctx.fill();ctx.fillStyle="#344054";ctx.font="11px Arial";ctx.fillText(`${f}: ${vals[i]}`,lx+14,ly+4+i*25)});
+ renderOrigemChart();
+}
+window.addEventListener("resize",()=>renderQuadranteChart());
+
+document.addEventListener("change",function(e){
+ const el=e.target;
+ if(el && el.dataset && el.dataset.i!==undefined && el.dataset.f){
+   let a=getAgenda(),i=parseInt(el.dataset.i),f=el.dataset.f;
+   if(a[i]){
+     a[i][f]=el.value;
+     localStorage.setItem(key(),JSON.stringify(a));
+     update();renderQuadranteChart();
+   }
+ }
+});
+
+</script>
+</body></html>
